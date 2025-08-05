@@ -1,41 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { Globe, Menu, X, Code, Shield, Bot, Award, Zap, Users, ChevronRight, Phone, Mail, MapPin, Star, MessageCircle, Calculator } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
 import { Button } from './components/ui/button';
 import { Badge } from './components/ui/badge';
-import { 
-  Code, 
-  Shield, 
-  Bot, 
-  Phone, 
-  Mail, 
-  MapPin, 
-  Menu, 
-  X, 
-  Globe, 
-  MessageCircle,
-  Calculator,
-  ChevronRight,
-  Star,
-  Users,
-  Award,
-  Zap
-} from 'lucide-react';
+import Chatbot from './components/Chatbot';
+import CostCalculator from './components/CostCalculator';
 import './App.css';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('home');
   const [language, setLanguage] = useState('ar');
+  const [currentPage, setCurrentPage] = useState('home');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showChatbot, setShowChatbot] = useState(false);
   const [showCalculator, setShowCalculator] = useState(false);
+
+  const isArabic = language === 'ar';
+  const isRTL = isArabic;
 
   const toggleLanguage = () => {
     setLanguage(language === 'ar' ? 'en' : 'ar');
   };
 
-  const isRTL = language === 'ar';
-
-  const content = {
+  const translations = {
     ar: {
       nav: {
         home: 'الرئيسية',
@@ -77,7 +63,7 @@ function App() {
       },
       projects: {
         title: 'مشاريعنا',
-        subtitle: 'نفخر بتقديم حلول تقنية متميزة لعملائنا',
+        subtitle: 'نفتخر بتقديم حلول تقنية متميزة لعملائنا',
         items: [
           {
             title: 'تطبيق خلوة',
@@ -93,7 +79,7 @@ function App() {
           },
           {
             title: 'مارسين أتمتة',
-            desc: 'حلول الأتمتة المتقدمة وروبوتات الواتساب للأعمال',
+            desc: 'حلول أتمتة متقدمة وروبوتات واتساب للأعمال',
             category: 'أتمتة',
             tech: ['Python', 'WhatsApp API', 'AI/ML']
           },
@@ -131,11 +117,6 @@ function App() {
         emailLabel: 'البريد الإلكتروني',
         messageLabel: 'الرسالة',
         sendBtn: 'إرسال'
-      },
-      footer: {
-        company: 'ATFWQ - شركة التفوق الرقمي',
-        rights: 'جميع الحقوق محفوظة',
-        quickLinks: 'روابط سريعة'
       }
     },
     en: {
@@ -201,13 +182,13 @@ function App() {
           },
           {
             title: 'Sanad Services',
-            desc: 'Platform for cleaning, plumbing, and maintenance services with smart booking system',
+            desc: 'Platform for cleaning, plumbing and maintenance services with smart booking system',
             category: 'Service Platform',
             tech: ['Flutter', 'Laravel', 'MySQL']
           },
           {
             title: 'Delivery App',
-            desc: 'Integrated delivery app with live tracking and secure payment system',
+            desc: 'Integrated delivery application with live tracking and secure payment system',
             category: 'Delivery App',
             tech: ['React Native', 'Express.js', 'MongoDB']
           }
@@ -233,16 +214,11 @@ function App() {
         emailLabel: 'Email',
         messageLabel: 'Message',
         sendBtn: 'Send'
-      },
-      footer: {
-        company: 'ATFWQ - Digital Excellence Company',
-        rights: 'All Rights Reserved',
-        quickLinks: 'Quick Links'
       }
     }
   };
 
-  const t = content[language];
+  const t = translations[language];
 
   const renderPage = () => {
     switch (currentPage) {
@@ -250,22 +226,19 @@ function App() {
         return (
           <div className={`min-h-screen ${isRTL ? 'arabic-text' : 'english-text'}`}>
             {/* Hero Section */}
-            <section className="relative py-20 px-4 bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 text-white overflow-hidden">
-              <div className="absolute inset-0 bg-black/20"></div>
-              <div className="relative max-w-6xl mx-auto text-center">
-                <h1 className="text-4xl md:text-6xl font-bold mb-6 fade-in">
+            <section className="relative bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 text-white py-20 px-4 overflow-hidden">
+              <div className="max-w-6xl mx-auto text-center relative z-10">
+                <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
                   {t.home.title}
                 </h1>
-                <p className="text-xl md:text-2xl mb-8 max-w-4xl mx-auto leading-relaxed slide-in-right">
+                <p className="text-xl md:text-2xl mb-8 max-w-4xl mx-auto leading-relaxed opacity-90">
                   {t.home.subtitle}
                 </p>
                 <Button 
                   onClick={() => setCurrentPage('contact')}
-                  size="lg"
                   className="btn-primary text-lg px-8 py-3"
                 >
                   {t.home.contactBtn}
-                  <ChevronRight className="ml-2 h-5 w-5" />
                 </Button>
               </div>
             </section>
@@ -280,14 +253,12 @@ function App() {
                   {Object.entries(t.services).map(([key, service]) => {
                     const IconComponent = service.icon;
                     return (
-                      <Card key={key} className="service-card hover:shadow-xl transition-all duration-300 border-0 bg-white">
-                        <CardHeader className="text-center pb-4">
-                          <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <IconComponent className="h-8 w-8 text-white" />
+                      <Card key={key} className="service-card hover:shadow-xl transition-all duration-300 border-0 cursor-pointer" onClick={() => setCurrentPage(key)}>
+                        <CardHeader className="text-center">
+                          <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <IconComponent className="h-10 w-10 text-white" />
                           </div>
-                          <CardTitle className="text-xl font-bold text-gray-800">
-                            {service.title}
-                          </CardTitle>
+                          <CardTitle className="text-xl font-bold text-gray-800">{service.title}</CardTitle>
                         </CardHeader>
                         <CardContent>
                           <CardDescription className="text-gray-600 text-center leading-relaxed">
@@ -323,6 +294,204 @@ function App() {
                 </div>
               </div>
             </section>
+          </div>
+        );
+
+      case 'programming':
+        return (
+          <div className={`min-h-screen py-20 px-4 ${isRTL ? 'arabic-text' : 'english-text'}`}>
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-16">
+                <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-800">
+                  {isArabic ? 'البرمجة وتطوير التطبيقات' : 'Programming & App Development'}
+                </h1>
+                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                  {isArabic ? 'نطور تطبيقات الموبايل والويب والأنظمة المتكاملة بأحدث التقنيات' : 'We develop mobile apps, web applications, and integrated systems using the latest technologies'}
+                </p>
+              </div>
+              
+              <div className="grid md:grid-cols-3 gap-8">
+                <Card className="service-card hover:shadow-xl transition-all duration-300 border-0">
+                  <CardHeader>
+                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Code className="h-8 w-8 text-white" />
+                    </div>
+                    <CardTitle className="text-xl font-bold text-gray-800 text-center">
+                      {isArabic ? 'تطبيقات الموبايل' : 'Mobile Applications'}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className="text-gray-600 text-center leading-relaxed">
+                      {isArabic ? 'تطوير تطبيقات iOS و Android بتقنيات حديثة' : 'Developing iOS and Android apps with modern technologies'}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+
+                <Card className="service-card hover:shadow-xl transition-all duration-300 border-0">
+                  <CardHeader>
+                    <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Globe className="h-8 w-8 text-white" />
+                    </div>
+                    <CardTitle className="text-xl font-bold text-gray-800 text-center">
+                      {isArabic ? 'مواقع الويب' : 'Web Applications'}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className="text-gray-600 text-center leading-relaxed">
+                      {isArabic ? 'تطوير مواقع ويب متجاوبة وسريعة' : 'Developing responsive and fast web applications'}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+
+                <Card className="service-card hover:shadow-xl transition-all duration-300 border-0">
+                  <CardHeader>
+                    <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Zap className="h-8 w-8 text-white" />
+                    </div>
+                    <CardTitle className="text-xl font-bold text-gray-800 text-center">
+                      {isArabic ? 'الأنظمة المتكاملة' : 'Integrated Systems'}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className="text-gray-600 text-center leading-relaxed">
+                      {isArabic ? 'حلول برمجية شاملة للشركات والمؤسسات' : 'Comprehensive software solutions for companies and institutions'}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'cybersecurity':
+        return (
+          <div className={`min-h-screen py-20 px-4 ${isRTL ? 'arabic-text' : 'english-text'}`}>
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-16">
+                <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-800">
+                  {isArabic ? 'الأمن السيبراني' : 'Cybersecurity'}
+                </h1>
+                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                  {isArabic ? 'حماية الشبكات والأنظمة الحكومية والخاصة من التهديدات السيبرانية' : 'Protecting government and private networks and systems from cyber threats'}
+                </p>
+              </div>
+              
+              <div className="grid md:grid-cols-3 gap-8">
+                <Card className="service-card hover:shadow-xl transition-all duration-300 border-0">
+                  <CardHeader>
+                    <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Shield className="h-8 w-8 text-white" />
+                    </div>
+                    <CardTitle className="text-xl font-bold text-gray-800 text-center">
+                      {isArabic ? 'حماية الشبكات' : 'Network Security'}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className="text-gray-600 text-center leading-relaxed">
+                      {isArabic ? 'تأمين الشبكات الحكومية والخاصة ضد الاختراقات' : 'Securing government and private networks against breaches'}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+
+                <Card className="service-card hover:shadow-xl transition-all duration-300 border-0">
+                  <CardHeader>
+                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Award className="h-8 w-8 text-white" />
+                    </div>
+                    <CardTitle className="text-xl font-bold text-gray-800 text-center">
+                      {isArabic ? 'كاميرات المراقبة' : 'Surveillance Systems'}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className="text-gray-600 text-center leading-relaxed">
+                      {isArabic ? 'تركيب وصيانة أنظمة المراقبة المتطورة' : 'Installation and maintenance of advanced surveillance systems'}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+
+                <Card className="service-card hover:shadow-xl transition-all duration-300 border-0">
+                  <CardHeader>
+                    <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Users className="h-8 w-8 text-white" />
+                    </div>
+                    <CardTitle className="text-xl font-bold text-gray-800 text-center">
+                      {isArabic ? 'الخدمات الأمنية' : 'Security Services'}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className="text-gray-600 text-center leading-relaxed">
+                      {isArabic ? 'استشارات أمنية شاملة وحلول الحماية' : 'Comprehensive security consulting and protection solutions'}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'automation':
+        return (
+          <div className={`min-h-screen py-20 px-4 ${isRTL ? 'arabic-text' : 'english-text'}`}>
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-16">
+                <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-800">
+                  {isArabic ? 'الأتمتة والذكاء الاصطناعي' : 'Automation & AI'}
+                </h1>
+                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                  {isArabic ? 'حلول الأتمتة وروبوتات الواتساب والمساعدات الذكية' : 'Automation solutions, WhatsApp bots, and smart assistants'}
+                </p>
+              </div>
+              
+              <div className="grid md:grid-cols-3 gap-8">
+                <Card className="service-card hover:shadow-xl transition-all duration-300 border-0">
+                  <CardHeader>
+                    <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <MessageCircle className="h-8 w-8 text-white" />
+                    </div>
+                    <CardTitle className="text-xl font-bold text-gray-800 text-center">
+                      {isArabic ? 'أتمتة الواتساب' : 'WhatsApp Automation'}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className="text-gray-600 text-center leading-relaxed">
+                      {isArabic ? 'روبوتات ذكية للرد التلقائي وخدمة العملاء' : 'Smart bots for automatic replies and customer service'}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+
+                <Card className="service-card hover:shadow-xl transition-all duration-300 border-0">
+                  <CardHeader>
+                    <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-violet-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Bot className="h-8 w-8 text-white" />
+                    </div>
+                    <CardTitle className="text-xl font-bold text-gray-800 text-center">
+                      {isArabic ? 'الشات بوت' : 'Chatbots'}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className="text-gray-600 text-center leading-relaxed">
+                      {isArabic ? 'مساعدات ذكية متعددة المنصات' : 'Smart assistants across multiple platforms'}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+
+                <Card className="service-card hover:shadow-xl transition-all duration-300 border-0">
+                  <CardHeader>
+                    <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Zap className="h-8 w-8 text-white" />
+                    </div>
+                    <CardTitle className="text-xl font-bold text-gray-800 text-center">
+                      {isArabic ? 'أتمتة سير العمل' : 'Workflow Automation'}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className="text-gray-600 text-center leading-relaxed">
+                      {isArabic ? 'تحسين العمليات التجارية بالذكاء الاصطناعي' : 'Improving business processes with AI'}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
           </div>
         );
 
@@ -599,7 +768,7 @@ function App() {
                       setCurrentPage(key);
                       setIsMenuOpen(false);
                     }}
-                    className={`px-3 py-2 rounded-md text-sm font-medium text-left transition-colors ${
+                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors text-left ${
                       currentPage === key
                         ? 'text-blue-600 bg-blue-50'
                         : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
@@ -620,149 +789,100 @@ function App() {
       </main>
 
       {/* Footer */}
-      <footer className="footer-clean py-12 px-4">
+      <footer className="bg-gray-800 text-white py-12 px-4">
         <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-8 text-center md:text-left">
+          <div className="grid md:grid-cols-3 gap-8">
             <div>
-              <div className="flex items-center justify-center md:justify-start space-x-3 rtl:space-x-reverse mb-4">
+              <div className="flex items-center space-x-3 rtl:space-x-reverse mb-4">
                 <img 
                   src="/src/assets/1000142239.png" 
                   alt="ATFWQ Logo" 
-                  className="h-8 w-auto filter brightness-0 invert"
+                  className="h-8 w-auto"
                 />
                 <span className="text-lg font-bold">ATFWQ</span>
               </div>
-              <p className="text-sm opacity-90">
-                {t.footer.company}
+              <p className="text-gray-300 leading-relaxed">
+                {isArabic ? 'شركة التفوق الرقمي - نقدم حلولاً تقنية متطورة' : 'Digital Excellence Company - Providing advanced technical solutions'}
               </p>
             </div>
-
+            
             <div>
-              <h3 className="font-semibold mb-4">{t.footer.quickLinks}</h3>
-              <div className="space-y-2">
-                <button
-                  onClick={() => setCurrentPage('home')}
-                  className="block text-sm opacity-90 hover:opacity-100 transition-opacity"
-                >
-                  {t.nav.home}
-                </button>
-                <button
-                  onClick={() => setCurrentPage('projects')}
-                  className="block text-sm opacity-90 hover:opacity-100 transition-opacity"
-                >
-                  {t.nav.projects}
-                </button>
-                <button
-                  onClick={() => setCurrentPage('contact')}
-                  className="block text-sm opacity-90 hover:opacity-100 transition-opacity"
-                >
-                  {t.nav.contact}
-                </button>
-              </div>
+              <h3 className="text-lg font-semibold mb-4">
+                {isArabic ? 'روابط سريعة' : 'Quick Links'}
+              </h3>
+              <ul className="space-y-2">
+                {Object.entries(t.nav).map(([key, label]) => (
+                  <li key={key}>
+                    <button
+                      onClick={() => setCurrentPage(key)}
+                      className="text-gray-300 hover:text-white transition-colors"
+                    >
+                      {label}
+                    </button>
+                  </li>
+                ))}
+              </ul>
             </div>
-
+            
             <div>
-              <h3 className="font-semibold mb-4">{t.nav.contact}</h3>
-              <div className="space-y-2 text-sm opacity-90">
-                <p>{t.contact.phone}</p>
-                <p>{t.contact.email}</p>
-                <p>{t.contact.address}</p>
+              <h3 className="text-lg font-semibold mb-4">
+                {isArabic ? 'معلومات التواصل' : 'Contact Info'}
+              </h3>
+              <div className="space-y-2 text-gray-300">
+                <p className="flex items-center">
+                  <Phone className="h-4 w-4 mr-2" />
+                  {t.contact.phone}
+                </p>
+                <p className="flex items-center">
+                  <Mail className="h-4 w-4 mr-2" />
+                  {t.contact.email}
+                </p>
+                <p className="flex items-center">
+                  <MapPin className="h-4 w-4 mr-2" />
+                  {t.contact.address}
+                </p>
               </div>
             </div>
           </div>
-
-          <div className="border-t border-white/20 mt-8 pt-8 text-center">
-            <p className="text-sm opacity-90">
-              © 2024 ATFWQ. {t.footer.rights}
-            </p>
+          
+          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
+            <p>© 2024 ATFWQ. {isArabic ? 'جميع الحقوق محفوظة' : 'All Rights Reserved'}</p>
           </div>
         </div>
       </footer>
 
-      {/* Floating Buttons */}
-      <button
-        onClick={() => setShowChatbot(!showChatbot)}
-        className="floating-button chat-button"
-        title="شات بوت / Chatbot"
-      >
-        <MessageCircle className="h-6 w-6" />
-      </button>
+      {/* Floating Action Buttons */}
+      <div className="fixed bottom-6 right-6 flex flex-col space-y-4 z-50">
+        <Button
+          onClick={() => setShowChatbot(!showChatbot)}
+          className="w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-700 shadow-lg"
+          title={isArabic ? 'شات بوت' : 'Chatbot'}
+        >
+          <MessageCircle className="h-6 w-6" />
+        </Button>
+        
+        <Button
+          onClick={() => setShowCalculator(!showCalculator)}
+          className="w-14 h-14 rounded-full bg-green-600 hover:bg-green-700 shadow-lg"
+          title={isArabic ? 'حاسبة التكلفة' : 'Cost Calculator'}
+        >
+          <Calculator className="h-6 w-6" />
+        </Button>
+      </div>
 
-      <button
-        onClick={() => setShowCalculator(!showCalculator)}
-        className="floating-button calculator-button"
-        title="حاسبة التكلفة / Cost Calculator"
-      >
-        <Calculator className="h-6 w-6" />
-      </button>
+      {/* Chatbot Component */}
+      <Chatbot 
+        isOpen={showChatbot} 
+        onClose={() => setShowChatbot(false)} 
+        language={language} 
+      />
 
-      {/* Chatbot Modal Placeholder */}
-      {showChatbot && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-bold">شات بوت ATFWQ</h3>
-              <button
-                onClick={() => setShowChatbot(false)}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            <p className="text-gray-600 mb-4">مرحباً! كيف يمكنني مساعدتك؟</p>
-            <div className="space-y-2">
-              <button className="w-full text-left p-2 bg-gray-50 rounded hover:bg-gray-100">
-                ما هي خدماتكم؟
-              </button>
-              <button className="w-full text-left p-2 bg-gray-50 rounded hover:bg-gray-100">
-                كم تكلفة تطوير تطبيق؟
-              </button>
-              <button className="w-full text-left p-2 bg-gray-50 rounded hover:bg-gray-100">
-                كيف يمكنني التواصل معكم؟
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Calculator Modal Placeholder */}
-      {showCalculator && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-bold">حاسبة التكلفة</h3>
-              <button
-                onClick={() => setShowCalculator(false)}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">نوع الخدمة</label>
-                <select className="w-full p-2 border rounded-md">
-                  <option>تطوير تطبيق موبايل</option>
-                  <option>تطوير موقع ويب</option>
-                  <option>نظام أمن سيبراني</option>
-                  <option>حلول أتمتة</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">مستوى التعقيد</label>
-                <select className="w-full p-2 border rounded-md">
-                  <option>بسيط</option>
-                  <option>متوسط</option>
-                  <option>معقد</option>
-                </select>
-              </div>
-              <Button className="w-full btn-primary">
-                احسب التكلفة
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Cost Calculator Component */}
+      <CostCalculator 
+        isOpen={showCalculator} 
+        onClose={() => setShowCalculator(false)} 
+        language={language} 
+      />
     </div>
   );
 }

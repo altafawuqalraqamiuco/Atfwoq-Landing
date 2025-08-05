@@ -249,7 +249,21 @@
 [class*="powered"],
 [class*="made-with"],
 .footer-attribution,
-.attribution {
+.attribution,
+.manus-attribution,
+[class*="manus"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  width: 0 !important;
+  overflow: hidden !important;
+}
+
+/* إخفاء أي نص يحتوي على Made with */
+*:contains("Made with"),
+*:contains("Powered by"),
+*:contains("Built with") {
   display: none !important;
 }
 
